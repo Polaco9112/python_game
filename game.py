@@ -1,6 +1,7 @@
 import pygame, sys
 import constants
 from player import Player
+from weapon import Weapon
 
 pygame.init()
 
@@ -13,14 +14,25 @@ def img_scale(image, scale):
   new_image = pygame.transform.scale(image, (w * scale, h * scale))
   return new_image
 
+
+#Importamos las imagenes
+
+#Estas son las images del personaje
 animations = []
 for i in range(7):
   img = pygame.image.load(f"assets//images//characters//player//Player_{i}.png")
   img = img_scale(img, constants.PLAYER_SCALE)
   animations.append(img)
 
+#Aqui va la imagen del arma
+gun_image = pygame.image.load(f"assets//images//weapons//gun.png")
+gun_image = img_scale(gun_image, constants.WEAPON_SCALE)
 
+#Creamos el personaje principal del juego
 jugador = Player(50, 50, animations)
+
+#Creamos el arma asociada al personaje
+gun = Weapon(gun_image)
 
 width = 1200
 height = 800
@@ -61,10 +73,17 @@ while True:
   #Llamamos a la funcion que mueve el personaje 
   jugador.move_player(delta_x, delta_y)
 
+  #Actualizamos el estado del jugador
   jugador.update()
 
+  #Actualizamos el estado del arma
+  gun.update(jugador)
 
+  #Dibujamos el personaje con el que vamos a jugar
   jugador.draw(gameScreen)
+
+  #Dibujamos el arma del jugador 
+  gun.draw_weapon(gameScreen)
 
   for event in pygame.event.get():
     if event.type == pygame.QUIT:
